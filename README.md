@@ -34,3 +34,4 @@ A következő feladathoz fog kelleni egy JS/TS projekt. Lehet használni más ta
 ![innitial_scan](image-6.png)
 9. (3 pont) Elemezze a Sonar által talált hibákat. Válassza ki a legfontosabbnak ítélt problémát, javítsa ki, majd az újabb analízissel igazolja a javulást a dokumentációban. Egy screenshot-t ide a readme-be a hibáról a Sonar oldalán.
 ![to_fix](image-7.png)
+![rescan](image-8.png)
