@@ -24,8 +24,6 @@ After:
 ![coverage_after](image-4.png)
 ![midnight_after](image-5.png)
 
-
-
 A következő feladathoz fog kelleni egy JS/TS projekt. Lehet használni más tantárgynál lévő projektet pl. webből, viszont ha valaki ezzel nem szeretne élni, itt egy egyszerű JavaScript projekt (https://github.com/ubb-verval-2026/ubb-verval-simple-js-project), amit `npx serve` paranccsal lehet futtatni. A választott projektet húzza be ebbe a labor repo-jába.
 
 6. (2 pont) Konfiguráljon a technológiának megfelelő kódformázási standardokat a kérdéses kódokra. (pl. eslint, prettier ..stb)
