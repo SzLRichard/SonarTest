@@ -1,8 +1,8 @@
-name: .NET Build
+name: .NET CI + Tests + Coverage + Sonar
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -11,28 +11,57 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
         dotnet-version: '8.0.x'
 
+    - name: Install SonarScanner
+      run: dotnet tool install --global dotnet-sonarscanner
+
+    - name: Add .NET tools to PATH
+      run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Sonar Begin
+      run: |
+        dotnet sonarscanner begin \
+        /k:"SzLRichard_SonarTest" \
+        /o:"szlrichard" \
+        /d:sonar.token="${{ secrets.SONAR_TOKEN }}" \
+        /d:sonar.host.url="https://sonarcloud.io"
+        
     - name: Restore dependencies
       run: dotnet restore
 
     - name: Build
       run: dotnet build --no-restore
+
     - name: Test
-      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage;Format=opencover" --logger trx  --results-directory ./TestResults
+      run: dotnet test --no-build --verbosity normal --collect:"XPlat Code Coverage;Format=opencover" --logger trx --results-directory ./TestResults
 
     - name: Install ReportGenerator
       run: dotnet tool install -g dotnet-reportgenerator-globaltool
-        
-    - name: Generate HTML report
-      run: reportgenerator -reports:"./TestResults/*/coverage.opencover.xml" -targetdir:"./TestResults/CoverageReport" -reporttypes:Html
 
-    - name: Upload coverage report as artifact
+    - name: Add ReportGenerator to PATH
+      run: echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+    - name: Generate HTML coverage report
+      run: |
+        reportgenerator \
+          -reports:"./TestResults/**/coverage.opencover.xml" \
+          -targetdir:"./TestResults/CoverageReport" \
+          -reporttypes:Html
+
+    - name: Sonar End
+      run: |
+        dotnet sonarscanner end \
+          /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+    - name: Upload coverage report artifact
       uses: actions/upload-artifact@v4
       with:
-        name: "Code coverage report"
+        name: Code coverage report
         path: ./TestResults/CoverageReport
